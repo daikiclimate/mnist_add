@@ -16,12 +16,13 @@ def main():
     min_num = min(min_n)//100*100
     
     pair = []
-    for i in range(10):
-        for j in range(10):
-            name1 = sep_label[i].pop(0)
-            name2 = sep_label[j].pop(0)
-            label = [i,j,i+j]
-            pair.append([name1, name2, label])
+    for k in range(min_num//100):
+        for i in range(10):
+            for j in range(10):
+                name1 = sep_label[i].pop(0)
+                name2 = sep_label[j].pop(0)
+                label = [i,j,i+j]
+                pair.append([name1, name2, label])
     f = open("train_pair.txt", "wb")
     pickle.dump(pair ,f)
 
@@ -34,12 +35,13 @@ def main():
     min_num = min(min_n)//100*100
     
     pair = []
-    for i in range(10):
-        for j in range(10):
-            name1 = sep_label[i].pop(0)
-            name2 = sep_label[j].pop(0)
-            label = [i,j,i+j]
-            pair.append([name1, name2, label])
+    for k in range(min_num//100):
+        for i in range(10):
+            for j in range(10):
+                name1 = sep_label[i].pop(0)
+                name2 = sep_label[j].pop(0)
+                label = [i,j,i+j]
+                pair.append([name1, name2, label])
 
 
     f = open("test_pair.txt", "wb")
