@@ -29,7 +29,8 @@ class MyDataSet(Dataset):
         #w,h = img.shape
         
         #print(data.shape,label)
-        return img1,img2, torch.tensor(label[2], dtype = torch.float32)
+        return img1,img2, torch.tensor(int(label[2]), dtype = torch.long)
+        #return img1,img2, torch.tensor(label[2], dtype = torch.float32)
         #return torch.tensor(img, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 
 class ValDataSet(Dataset):
@@ -54,7 +55,8 @@ class ValDataSet(Dataset):
         #w,h = img.shape
         
         #print(data.shape,label)
-        return img1,img2, torch.tensor(label[2], dtype = torch.float32)
+        return img1,img2, torch.tensor(label[2])
+        #return img1,img2, torch.tensor(label[2], dtype = torch.float32)
         #return torch.tensor(img, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 
 

@@ -1,7 +1,7 @@
 import time
 import os
 import numpy as np
-
+from sklearn.metrics import accuracy_score as acc
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
@@ -21,8 +21,8 @@ from Datorch.printlog import Logfunc
 
 def main():
 
-    epochs = 100
-    batch_size =32
+    epochs = 30
+    batch_size =64
     device_id= [0]
 
 
@@ -56,7 +56,7 @@ def main():
 
     criterion = nn.MSELoss()
     criterion = nn.SmoothL1Loss()
-    # criterion = nn.CrossEntrapyLoss()
+    criterion = nn.CrossEntropyLoss()
 
     #optimizer = optim.Adam(net.parameters(), lr = 0.01)
     optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum=0.9)
@@ -77,13 +77,15 @@ def main():
         t1 = time.time()
         total_train_loss = [0.0,0]
         total_test_loss = [0.0,0]
-        total = 0
+
+        correct_train = 0
+        total_train = 0
         for i, data in enumerate(train_loader, 0):
             #get input
             img1, img2, labels = data
             img1 = img1.to(device)
             img2 = img2.to(device)
-            labels = labels.reshape(-1,1)
+            #labels = labels.reshape(-1,1)
             labels = labels.to(device)
 
             optimizer.zero_grad()
@@ -92,19 +94,26 @@ def main():
 
             train_loss.backward()
             optimizer.step()
+
             total_train_loss[0] += train_loss.item()
             total_train_loss[1] += 1
+            _, predicted = torch.max(outputs.data, 1)
+
+            total_train += labels.size(0)
+            correct_train += (predicted == labels).cpu().sum().item()
+
+
         scheduler.step()
         t2 = time.time()
-        correct = 0
-        total = 0
+        correct_test = 0
+        total_test = 0
 
         with torch.no_grad():
           for data in val_loader:
             img1, img2, labels = data
             img1 = img1.to(device)
             img2 = img2.to(device)
-            labels = labels.reshape(-1,1)
+#            labels = labels.reshape(-1,1)
             labels = labels.to(device)
             outputs = net(img1, img2)
 
@@ -112,15 +121,19 @@ def main():
             total_test_loss[0] += test_loss.item()
             total_test_loss[1] += 1
 
+            _, predicted = torch.max(outputs.data, 1)
+            total_test += labels.size(0)
+            correct_test += (predicted == labels).cpu().sum().item()
+
         t3 = time.time()
         Logf.update(epoch, total_train_loss[0]/total_train_loss[1],total_test_loss[0]/total_test_loss[1])
         Logf.print_log()
-        print("train time:",round(t2-t1),"sec")
-        print("test  time:",round(t3-t2),"sec")
+        print("train_acc :", correct_train, " / " ,total_train, "::",correct_train/total_train*100,"%")
+        print("test_acc  :", correct_test, " / " ,total_test, "::",correct_test/total_test*100,"%")
         Logf.write_log()
 
     net = net.cpu()
-    torch.save(net.state_dict(),"test.pth")
+    torch.save(net.state_dict(),"weight/classificate.pth")
 
     # mailog.sendmail("log1105","log.txt")
     print("finish")
