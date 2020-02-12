@@ -26,9 +26,6 @@ class MyDataSet(Dataset):
         img1 = self.transform(Image.open(data_path1))
         data_path2 = "data/MNIST/train/"+pic2
         img2 = self.transform(Image.open(data_path2))
-        #w,h = img.shape
-        
-        #print(data.shape,label)
         return img1,img2, torch.tensor(int(label[2]), dtype = torch.long)
         #return img1,img2, torch.tensor(label[2], dtype = torch.float32)
         #return torch.tensor(img, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
@@ -40,8 +37,6 @@ class ValDataSet(Dataset):
         self.data = []
         f = open("test_pair.txt","rb")
         self.data = pickle.load(f) 
-        # print(self.data[0])
-        # print(len(self.data))
 
     def __len__(self):
         return len(self.data)
@@ -52,10 +47,8 @@ class ValDataSet(Dataset):
         img1 = self.transform(Image.open(data_path1))
         data_path2 = "data/MNIST/test/"+pic2
         img2 = self.transform(Image.open(data_path2))
-        #w,h = img.shape
         
-        #print(data.shape,label)
-        return img1,img2, torch.tensor(label[2])
+        return img1,img2, torch.tensor(label)
         #return img1,img2, torch.tensor(label[2], dtype = torch.float32)
         #return torch.tensor(img, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
 

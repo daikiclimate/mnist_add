@@ -9,17 +9,17 @@ class double(nn.Module):
         super(double, self).__init__()
         self.net1 = Net()
         self.net2 = Net()
-        self.fc1 = nn.Linear(8*8*32*2, 100)
-        self.fc2 = nn.Linear(100, 19)
+        self.fc1 = nn.Linear(8*8*32, 100)
+        self.fc2 = nn.Linear(100*2, 19)
         #self.fc2 = nn.Linear(100, 1)
 
     def forward(self, x, y):
-        x = self.net1(x)
+        x = self.fc1(self.net1(x))
         # y = self.net2(x[1])
-        y = self.net1(y)
+        y = self.fc1(self.net1(y))
         #y = net1(y)
+
         z = torch.cat([x,y], dim = 1)
-        z = self.fc1(z)
         z = self.fc2(z)
         return z
 

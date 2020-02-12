@@ -1,4 +1,5 @@
 import time
+import sys
 import os
 import numpy as np
 from sklearn.metrics import accuracy_score as acc
@@ -16,12 +17,10 @@ import torch.optim as optim
 from Net import double 
 from Mydataset import MyDataSet, ValDataSet
 
-import Datorch.mailog as mailog
-from Datorch.printlog import Logfunc 
 
 def main():
 
-    epochs = 30
+    epochs = 3
     batch_size =64
     device_id= [0]
 
@@ -45,17 +44,10 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(device)
     net = double()
-    #net = hg2()
-    #net = hg3()
-    #print(net)
     net = net.to(device)
-   # if device == 'cuda':
-       # net = torch.nn.DataParallel(net,device_ids = device_id)
-       # cudnn.benchmark = True
 
-
-    criterion = nn.MSELoss()
-    criterion = nn.SmoothL1Loss()
+    #criterion = nn.MSELoss()
+    #criterion = nn.SmoothL1Loss()
     criterion = nn.CrossEntropyLoss()
 
     #optimizer = optim.Adam(net.parameters(), lr = 0.01)
@@ -69,7 +61,6 @@ def main():
     test_log=[]
     test_acc=[]
 
-    Logf = Logfunc()
     print("start training")
 
     for epoch in range(epochs):
@@ -85,7 +76,6 @@ def main():
             img1, img2, labels = data
             img1 = img1.to(device)
             img2 = img2.to(device)
-            #labels = labels.reshape(-1,1)
             labels = labels.to(device)
 
             optimizer.zero_grad()
@@ -102,6 +92,7 @@ def main():
             total_train += labels.size(0)
             correct_train += (predicted == labels).cpu().sum().item()
 
+            sys.stdout.write('\r[Epoch %d/%d] [Batch %d/%d] [Train Loss: %.4f]' % (epoch, epochs, i, len(train_loader), total_train_loss[0]/total_train_loss[1]))
 
         scheduler.step()
         t2 = time.time()
@@ -113,7 +104,7 @@ def main():
             img1, img2, labels = data
             img1 = img1.to(device)
             img2 = img2.to(device)
-#            labels = labels.reshape(-1,1)
+            num1,num2,labels = labels[:,0], labels[:,1], labels[:,2]
             labels = labels.to(device)
             outputs = net(img1, img2)
 
@@ -126,16 +117,12 @@ def main():
             correct_test += (predicted == labels).cpu().sum().item()
 
         t3 = time.time()
-        Logf.update(epoch, total_train_loss[0]/total_train_loss[1],total_test_loss[0]/total_test_loss[1])
-        Logf.print_log()
-        print("train_acc :", correct_train, " / " ,total_train, "::",correct_train/total_train*100,"%")
-        print("test_acc  :", correct_test, " / " ,total_test, "::",correct_test/total_test*100,"%")
-        Logf.write_log()
+        print("train_acc :", correct_train, " / " ,total_train, "",correct_train/total_train*100,"%")
+        print("test_acc  :", correct_test, " / " ,total_test, "",correct_test/total_test*100,"%")
 
     net = net.cpu()
     torch.save(net.state_dict(),"weight/classificate.pth")
 
-    # mailog.sendmail("log1105","log.txt")
     print("finish")
 
 
