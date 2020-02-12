@@ -16,11 +16,14 @@ import torch.optim as optim
 
 from Net import double 
 from Mydataset import MyDataSet, ValDataSet
-
+WANDB = True
+if WANDB == True:
+    import wandb
+    wandb.init(project = "mnist_add")
 
 def main():
 
-    epochs = 3
+    epochs = 20
     batch_size =64
     device_id= [0]
 
@@ -50,8 +53,8 @@ def main():
     #criterion = nn.SmoothL1Loss()
     criterion = nn.CrossEntropyLoss()
 
-    #optimizer = optim.Adam(net.parameters(), lr = 0.01)
-    optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum=0.9)
+    optimizer = optim.Adam(net.parameters(), lr = 0.01)
+    # optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum=0.9)
     #optimizer = optim.SGD(net.parameters(), lr = 0.008, momentum=0.9, weight_decay = 0.008)
 
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
@@ -99,26 +102,46 @@ def main():
         correct_test = 0
         total_test = 0
 
+        result = [[0 for i1 in range(10)] for i2 in range(10)]
+        result_num = [[0 for i1 in range(10)] for i2 in range(10)]
         with torch.no_grad():
-          for data in val_loader:
-            img1, img2, labels = data
-            img1 = img1.to(device)
-            img2 = img2.to(device)
-            num1,num2,labels = labels[:,0], labels[:,1], labels[:,2]
-            labels = labels.to(device)
-            outputs = net(img1, img2)
+             for data in val_loader:
+                img1, img2, labels = data
+                img1 = img1.to(device)
+                img2 = img2.to(device)
+                num1,num2,labels = labels[:,0], labels[:,1], labels[:,2]
+                labels = labels.to(device)
+                outputs = net(img1, img2)
 
-            test_loss = criterion(outputs, labels)
-            total_test_loss[0] += test_loss.item()
-            total_test_loss[1] += 1
+                test_loss = criterion(outputs, labels)
+                total_test_loss[0] += test_loss.item()
+                total_test_loss[1] += 1
 
-            _, predicted = torch.max(outputs.data, 1)
-            total_test += labels.size(0)
-            correct_test += (predicted == labels).cpu().sum().item()
+                _, predicted = torch.max(outputs.data, 1)
+                total_test += labels.size(0)
+                correct_test += (predicted == labels).cpu().sum().item()
+
+                ans = (predicted == labels).cpu().numpy()
+                for i in range(len(ans)):
+                    n1 = num1[i]
+                    n2 = num2[i]
+                    result[n1][n2] += ans[i]
+                    result_num[n1][n2] += 1
+
 
         t3 = time.time()
         print("train_acc :", correct_train, " / " ,total_train, "",correct_train/total_train*100,"%")
         print("test_acc  :", correct_test, " / " ,total_test, "",correct_test/total_test*100,"%")
+        for i in range(10):
+            for j in range(10):
+                print(i,j,"{}/{},{:.1f}%".format(result[i][j],result_num[i][j],result[i][j]/result_num[i][j]*100))
+
+        if WANDB = True:
+            wandb_log = {}
+            wandb["epoch"] = epoch
+            wandb["train_acc"] = correct_train/total_train*100
+            wandb["test_acc"] = correct_test/total_test*100
+            wandb.log(wandb_log)
 
     net = net.cpu()
     torch.save(net.state_dict(),"weight/classificate.pth")

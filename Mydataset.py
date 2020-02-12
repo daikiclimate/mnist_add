@@ -12,7 +12,7 @@ class MyDataSet(Dataset):
     def __init__(self,transform=None ):
         self.transform = transform
         self.data = []
-        f = open("train_pair.txt","rb")
+        f = open("data/annotation/train_pair.txt","rb")
         self.data = pickle.load(f) 
         # print(self.data[0])
         # print(len(self.data))
@@ -35,7 +35,7 @@ class ValDataSet(Dataset):
     def __init__(self,transform=None ):
         self.transform = transform
         self.data = []
-        f = open("test_pair.txt","rb")
+        f = open("data/annotation/test_pair.txt","rb")
         self.data = pickle.load(f) 
 
     def __len__(self):
