@@ -9,9 +9,10 @@ class double(nn.Module):
         super(double, self).__init__()
         self.net1 = Net()
         self.net2 = Net()
-        self.fc1 = nn.Linear(7*7*32, 400)
-        self.fc2 = nn.Linear(400, 100)
-        self.fc3 = nn.Linear(100, 19)
+        self.fc1 = nn.Linear(7*7*32, 800)
+        self.fc2 = nn.Linear(800, 400)
+        self.fc3 = nn.Linear(400, 100)
+        self.fc4 = nn.Linear(100, 19)
 
     def forward(self, x, y):
         x = self.fc1(self.net1(x))

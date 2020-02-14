@@ -24,14 +24,14 @@ if WANDB == True:
 def main():
 
     epochs = 20
-    batch_size =64
+    batch_size =128
     device_id= [0]
 
 
     train_transform = transforms.Compose(
         [    # 360度ランダムで画像を回転する
             # transforms.Resize((32,32)),
-            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0),
+#            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0),
             transforms.ToTensor(),
             transforms.Normalize((0.5, ), (0.5,))])
 
@@ -58,7 +58,7 @@ def main():
     # optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum=0.9)
     #optimizer = optim.SGD(net.parameters(), lr = 0.008, momentum=0.9, weight_decay = 0.008)
 
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
+    #scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
     #scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     train_log = []
@@ -98,7 +98,7 @@ def main():
 
             sys.stdout.write('\r[Epoch %d/%d] [Batch %d/%d] [Train Loss: %.4f]' % (epoch, epochs, i, len(train_loader), total_train_loss[0]/total_train_loss[1]))
 
-        scheduler.step()
+        #scheduler.step()
         t2 = time.time()
         correct_test = 0
         total_test = 0
