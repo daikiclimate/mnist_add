@@ -9,15 +9,16 @@ class double(nn.Module):
         super(double, self).__init__()
         self.net1 = Net()
         self.net2 = Net()
-        self.fc1 = nn.Linear(8*8*32, 400)
-        self.fc2 = nn.Linear(400*2, 100)
+        self.fc1 = nn.Linear(7*7*32, 400)
+        self.fc2 = nn.Linear(400, 100)
         self.fc3 = nn.Linear(100, 19)
 
     def forward(self, x, y):
         x = self.fc1(self.net1(x))
         y = self.fc1(self.net1(y))
 
-        z = torch.cat([x,y], dim = 1)
+        # z = torch.cat([x,y], dim = 1)
+        z = x+y
         z = self.fc2(z)
         z = self.fc3(z)
         return z
@@ -34,7 +35,7 @@ class Net(nn.Module):
       x = self.conv1(x)
       x = self.pool(self.conv2(x))
       x = self.pool(self.conv3(x))
-      x = x.view(-1,8*8*32)
+      x = x.view(-1,7*7*32)
       return x
 
 class BnReluConv(nn.Module):

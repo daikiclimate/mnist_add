@@ -18,8 +18,8 @@ def main():
     
     pair = []
     for _ in range(1000):
-        for i in range(10):
-            for j in range(10):
+        for i in range(0,10):
+            for j in range(0,10):
                 
                 name1 = sep_label[i][random.randrange(0,min_n[i])]
                 name2 = sep_label[j][random.randrange(0,min_n[j])]

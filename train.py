@@ -16,7 +16,7 @@ import torch.optim as optim
 
 from Net import double 
 from Mydataset import MyDataSet, ValDataSet
-WANDB = True
+WANDB = 1
 if WANDB == True:
     import wandb
     wandb.init(project = "mnist_add")
@@ -30,14 +30,15 @@ def main():
 
     train_transform = transforms.Compose(
         [    # 360度ランダムで画像を回転する
-            transforms.Resize((32,32)),
+            # transforms.Resize((32,32)),
             transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0),
             transforms.ToTensor(),
             transforms.Normalize((0.5, ), (0.5,))])
 
     test_transform = transforms.Compose(
-            [transforms.Resize((32,32)),
-           transforms.ToTensor(),
+             [
+            # transforms.Resize((32,32)),
+            transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))])
     train_set = MyDataSet(train_transform)
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True,drop_last=True)
@@ -53,7 +54,7 @@ def main():
     #criterion = nn.SmoothL1Loss()
     criterion = nn.CrossEntropyLoss()
 
-    optimizer = optim.Adam(net.parameters(), lr = 0.01)
+    optimizer = optim.Adam(net.parameters(), lr = 0.001)
     # optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum=0.9)
     #optimizer = optim.SGD(net.parameters(), lr = 0.008, momentum=0.9, weight_decay = 0.008)
 
@@ -136,11 +137,11 @@ def main():
             for j in range(10):
                 print(i,j,"{}/{},{:.1f}%".format(result[i][j],result_num[i][j],result[i][j]/result_num[i][j]*100))
 
-        if WANDB = True:
+        if WANDB == True:
             wandb_log = {}
-            wandb["epoch"] = epoch
-            wandb["train_acc"] = correct_train/total_train*100
-            wandb["test_acc"] = correct_test/total_test*100
+            wandb_log["epoch"] = epoch
+            wandb_log["train_acc"] = correct_train/total_train*100
+            wandb_log["test_acc"] = correct_test/total_test*100
             wandb.log(wandb_log)
 
     net = net.cpu()
