@@ -3,6 +3,7 @@ import sys
 import os
 import numpy as np
 from sklearn.metrics import accuracy_score as acc
+
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
@@ -16,7 +17,7 @@ import torch.optim as optim
 
 from Net import double 
 from Mydataset import MyDataSet, ValDataSet
-WANDB = 1
+WANDB = 0
 if WANDB == True:
     import wandb
     wandb.init(project = "mnist_add")
@@ -29,15 +30,12 @@ def main():
 
 
     train_transform = transforms.Compose(
-        [    # 360度ランダムで画像を回転する
-            # transforms.Resize((32,32)),
-#            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0),
+        [   
             transforms.ToTensor(),
             transforms.Normalize((0.5, ), (0.5,))])
 
     test_transform = transforms.Compose(
              [
-            # transforms.Resize((32,32)),
             transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))])
     train_set = MyDataSet(train_transform)
