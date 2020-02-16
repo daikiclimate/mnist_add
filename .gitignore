@@ -2,5 +2,5 @@ nohup.out
 wandb
 .DS_Store
 .python-version
-__pycache__/
-
+__pycache__
+.ipynb_checkpoints
