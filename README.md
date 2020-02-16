@@ -1,7 +1,9 @@
 # mnist_add
 
 環境
+
 Pytorch 1.1など
+
 最近WANDBを使い始めたので、一部それも含まれている
 
 Utils
