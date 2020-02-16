@@ -1,0 +1,26 @@
+{
+    "root": "/home/dito/qiita/mnist_add",
+    "program": "train.py",
+    "git": {
+        "remote": "git@github.com:daikiclimate/mnist_add.git",
+        "commit": "8ad5562262c084f00ea2cb5912ece8c28323e448"
+    },
+    "email": "daikiclimate041@gmail.com",
+    "startedAt": "2020-02-13T07:35:31.366750",
+    "host": "dito-desktop",
+    "username": "dito",
+    "executable": "/home/dito/.pyenv/versions/3.6.7/bin/python",
+    "os": "Linux-5.3.0-28-generic-x86_64-with-debian-buster-sid",
+    "python": "3.6.7",
+    "gpu": "GeForce GTX TITAN X",
+    "gpu_count": 1,
+    "cpu_count": 8,
+    "cuda": "10.1.168",
+    "args": [],
+    "state": "finished",
+    "jobType": null,
+    "mode": "run",
+    "project": "mnist_add",
+    "heartbeatAt": "2020-02-13T08:02:52.563754",
+    "exitcode": 0
+}

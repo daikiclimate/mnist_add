@@ -1,0 +1,48 @@
+diff --git a/Net.py b/Net.py
+index 52f64d984..6b602ce52 100644
+--- a/Net.py
++++ b/Net.py
+@@ -10,14 +10,15 @@ class double(nn.Module):
+         self.net1 = Net()
+         self.net2 = Net()
+         self.fc1 = nn.Linear(8*8*32, 400)
+-        self.fc2 = nn.Linear(400*2, 100)
++        self.fc2 = nn.Linear(400, 100)
+         self.fc3 = nn.Linear(100, 19)
+ 
+     def forward(self, x, y):
+         x = self.fc1(self.net1(x))
+         y = self.fc1(self.net1(y))
+ 
+-        z = torch.cat([x,y], dim = 1)
++        # z = torch.cat([x,y], dim = 1)
++        z = x + y
+         z = self.fc2(z)
+         z = self.fc3(z)
+         return z
+diff --git a/__pycache__/Net.cpython-36.pyc b/__pycache__/Net.cpython-36.pyc
+index fdf35b1e9..2518b1717 100644
+Binary files a/__pycache__/Net.cpython-36.pyc and b/__pycache__/Net.cpython-36.pyc differ
+diff --git a/train.py b/train.py
+index 26ce7afdc..df78a5d99 100644
+--- a/train.py
++++ b/train.py
+@@ -136,11 +136,11 @@ def main():
+             for j in range(10):
+                 print(i,j,"{}/{},{:.1f}%".format(result[i][j],result_num[i][j],result[i][j]/result_num[i][j]*100))
+ 
+-        if WANDB = True:
++        if WANDB == True:
+             wandb_log = {}
+-            wandb["epoch"] = epoch
+-            wandb["train_acc"] = correct_train/total_train*100
+-            wandb["test_acc"] = correct_test/total_test*100
++            wandb_log["epoch"] = epoch
++            wandb_log["train_acc"] = correct_train/total_train*100
++            wandb_log["test_acc"] = correct_test/total_test*100
+             wandb.log(wandb_log)
+ 
+     net = net.cpu()
+diff --git a/weight/classificate.pth b/weight/classificate.pth
+index 45dfd73ad..97f4397e8 100644
+Binary files a/weight/classificate.pth and b/weight/classificate.pth differ
